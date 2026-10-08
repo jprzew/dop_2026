@@ -1,1 +1,1 @@
-print('Welcome to script1.')
+print('Welcome to script2.')
