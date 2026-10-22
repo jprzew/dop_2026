@@ -76,18 +76,6 @@ def add(a, b):
 
 
 # %%
-
-# %%
-add.__doc__
-
-# %%
-add.__name__
-
-# %%
-
-# %%
-
-# %%
 add(2, 3)
 
 
@@ -100,5 +88,7 @@ def power_tower(a, b, c):
 
 # %%
 power_tower(2, 3, 4)
+
+# %%
 
 # %%
