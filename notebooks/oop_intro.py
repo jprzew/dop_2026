@@ -62,8 +62,14 @@ car2.which_country()
 
 # %%
 class ComplexNumber:
-    real: float
-    imag: float
+    """The class implements complex number (addition and multiplication of complex numbers)
+
+
+    Attributes:
+        real (float): real part of the complex number
+        imag (float): imaginary part of the complex number
+    
+    """
 
     def __init__(self, real, imag):
 
@@ -89,13 +95,47 @@ class ComplexNumber:
 
         return ComplexNumber(real, imag)
 
+    def __mul__(self, other):
+        real = self.real * other.real - self.imag * other.imag
+        imag = self.imag * other.real + self.real * other.imag
+
+        return ComplexNumber(real, imag)
+
     def __repr__(self):
         return f'ComplexNumber({self.real}, {self.imag})'
 
     def __str__(self):
-        return f'{self.real} + i*{self.imag}'
+
+        # Default of imaginary part
+        imag_part = 'i' if abs(self.imag) == 1 else f'{abs(self.imag)}*i'
+        
+        match (self.real, self.imag):
+            case (real, 0):
+                real_part = f'{real}'
+                sign = ''
+                imag_part = ''
+
+            case (0, imag):
+                real_part = ''
+                sign = '-' if imag < 0 else ''
+
+            case (real, imag):
+                real_part = f'{real}'
+                sign = '-' if imag < 0 else '+'
+
+        result = f'{real_part}{sign}{imag_part}'
+        return result
     
 
+
+# %%
+print(ComplexNumber(2, -1))
+
+# %%
+print(ComplexNumber(0, 2))
+
+# %%
+print(ComplexNumber(0, -2))
 
 # %%
 z1 = ComplexNumber(2.0, 3.0)
@@ -109,54 +149,69 @@ z1 == z2
 # %%
 z1 + z2
 
-# %%
-print(z1+z2)
+# %% [markdown]
+# ## Print benchmark
 
 # %%
-print(ComplexNumber(1, -1))
+z1 = ComplexNumber(0, 1)
+z2 = ComplexNumber(2, 0)
+z3 = ComplexNumber(2, -3)
+z4 = ComplexNumber(0, -1)
+z5 = ComplexNumber(3, 7)
 
 # %%
+print(z1)
 
 # %%
-print(ComplexNumber(0, 1))
+print(z2)
 
 # %%
+print(z3)
 
 # %%
+print(z4)
 
 # %%
-w = z1 + z2
+print(z5)
+
+# %% [markdown]
+# ## Inheritance
 
 # %%
-w.real, w.imag
+from abc import ABC, abstractmethod
+
+
+class A(ABC):
+    
+    @abstractmethod
+    def say_hello(self):
+        pass
+
+    @abstractmethod
+    def what_is_your_name(self):
+        pass
+
+
+    
 
 # %%
-z1.real == z2.real, z2.imag == z2.imag
+class B(A):
+
+    def say_hello(self):
+        print('Hello')
+
+    def what_is_your_name(self):
+        print('My name is class B')
+
 
 # %%
+class_b_object = B()
 
 # %%
-z1.calculate() == z2.calculate()
+class_b_object.say_hello()
 
 # %%
-z1.calculate()
-
-# %%
-
-# %%
-
-# %%
-x1 = (2, 3)
-
-# %%
-x2 = (2, 3)
-
-# %%
-x1 == x2
-
-# %%
-
-# %%
+class_b_object.what_is_your_name()
 
 # %%
 
