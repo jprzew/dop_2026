@@ -214,7 +214,3 @@ class_b_object.say_hello()
 class_b_object.what_is_your_name()
 
 # %%
-
-# %%
-
-# %%
