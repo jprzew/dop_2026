@@ -10,13 +10,15 @@ class Population:
             [Creature(**kwargs) for _ in range(n)]
         )
 
-        self.n = len(self._instances)
-
     def natural_selection(self):
 
         for creature in self._instances:
             creature.kill()
 
         self._instances = set([creature for creature in self._instances if creature.alive])
-        self.n = len(self._instances)
+
+    @property
+    def n(self):
+        return len(self._instances)
+
 
