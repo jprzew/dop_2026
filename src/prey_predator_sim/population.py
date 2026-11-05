@@ -1,11 +1,18 @@
+from dataclasses import dataclass
 import matplotlib.pyplot as plt
 
 from .species import Creature
 
+
+@dataclass
+class HistoryElement:
+    prey: int
+    predators: int
+
 class Population:
 
-    _instances: set[Creature]
-    history: list[int]
+    _instances: set[Creature]  # Tu będą dwa zbiory (Prey & Predator)
+    history: list[int]  # list[HistoryElement]
 
     def __init__(self, n: int, **kwargs):
 
