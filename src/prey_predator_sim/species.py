@@ -20,8 +20,7 @@ class Creature:
         if self.alive and (random.random() < self.p_reproduce):
 
             # 1. Consider changing p_death, p_reproduce to have instances different from the parent
-            # 2. TODO: Change creature class to different one.
-            return Creature(p_death=self.p_death, p_reproduce=self.p_reproduce)
+            return self.__class__(p_death=self.p_death, p_reproduce=self.p_reproduce)
 
         return None
 
@@ -51,4 +50,13 @@ class Creature:
         value = min(1.0, max(0.0, value))
 
         self.__p_reproduce = value
+
+
+class Prey(Creature):
+    pass
+
+
+class Predator(Creature):
+    pass
+
 
