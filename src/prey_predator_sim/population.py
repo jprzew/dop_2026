@@ -1,7 +1,8 @@
+import random
 from dataclasses import dataclass
 import matplotlib.pyplot as plt
 
-from .species import Creature
+from .species import Creature, Prey, Predator
 
 
 @dataclass
@@ -10,34 +11,115 @@ class HistoryElement:
     predators: int
 
 class Population:
+    _instances: set[Creature]
+    history: list[dict]
 
-    _instances: set[Creature]  # Tu będą dwa zbiory (Prey & Predator)
-    history: list[int]  # list[HistoryElement]
+    def __init__(self, population_data: dict, species_parameters: dict):
 
-    def __init__(self, n: int, **kwargs):
+        self._instances = []
 
-        self._instances = set(
-            [Creature(**kwargs) for _ in range(n)]
-        )
+        for species, n in population_data.items():
+            for _ in range(n):
+                creature = species(**species_parameters[species])
+                self._instances.append(creature)
 
         self.history = [self.n]
 
-    def natural_selection(self):
+    def count_species(self, species):
+        return sum(
+            isinstance(creature, species)
+            for creature in self._instances
+        )
 
-        for creature in self._instances:
-            creature.kill()
-
-        self._instances = set([creature for creature in self._instances if creature.alive])
-
-        self.history.append(self.n)
-
-    def plot_history(self):
-        plt.plot(self.history)
-        plt.xlabel("Pokolenie")
-        plt.ylabel("Liczebność populacji")
-        plt.title("Historia populacji")
-        plt.show()
+    def _count_population(self):
+        return {
+            Prey: sum(isinstance(c, Prey) for c in self._instances),
+            Predator: sum(isinstance(c, Predator) for c in self._instances)
+        }
 
     @property
     def n(self):
-        return len(self._instances)
+        return self._count_population()
+
+    def hunting(self):
+
+        prey = [
+            c for c in self._instances
+            if isinstance(c, Prey) and c.alive
+        ]
+
+        predators = [
+            c for c in self._instances
+            if isinstance(c, Predator) and c.alive
+        ]
+
+        random.shuffle(prey)
+        random.shuffle(predators)
+
+        for predator, prey_animal in zip(predators, prey):
+            predator.hunt(prey_animal)
+
+    def natural_selection(self):
+
+        # 1. Reproduction
+        offspring = []
+
+        for creature in self._instances:
+            if creature.alive:
+                new_creature = creature.reproduce()
+
+                if new_creature is not None:
+                    offspring.append(new_creature)
+
+        # 2. Hunting
+        self.hunting()
+
+        # 3. Death
+        for creature in self._instances:
+            if creature.alive:
+                creature.kill()
+
+        # 4. History
+        survivors = [
+            creature for creature in self._instances
+            if creature.alive
+        ]
+
+        next_population = survivors + offspring
+
+
+        # 5. New population
+        self._instances = set(next_population)
+
+        self.history.append(
+            self._count_population()
+        )
+
+    def plot_history(self):
+
+        prey_history = [element[Prey] for element in self.history]
+        predator_history = [element[Predator] for element in self.history]
+
+        plt.plot(prey_history, label="Prey", color="blue")
+        plt.plot(predator_history, label="Predators", color="brown")
+
+        plt.xlabel("Generation")
+        plt.ylabel("Population size")
+        plt.title("Population history")
+        plt.ylim(bottom=0)
+        plt.legend()
+        plt.show()
+
+    def plot_histogram(self, attr):
+
+        values = [
+            getattr(creature, attr)
+            for creature in self._instances
+            if hasattr(creature, attr)
+        ]
+
+        plt.hist(values, edgecolor="black")
+        plt.xlabel(attr)
+        plt.ylabel("Frequency")
+        plt.title(f"Histogram of {attr}")
+        plt.show()
