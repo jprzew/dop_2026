@@ -16,12 +16,12 @@ class Population:
 
     def __init__(self, population_data: dict, species_parameters: dict):
 
-        self._instances = []
+        self._instances = set()
 
         for species, n in population_data.items():
             for _ in range(n):
                 creature = species(**species_parameters[species])
-                self._instances.append(creature)
+                self._instances.add(creature)
 
         self.history = [self.n]
 

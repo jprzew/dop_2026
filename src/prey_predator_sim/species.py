@@ -1,9 +1,27 @@
 """Module with definitions of considered species"""
 import random
 
+
+class Probability:
+
+    def __get__(self, obj, objtype=None):
+        return getattr(obj, self.private_name)
+
+    def __set__(self, obj, value):
+        # Makes sure that 0 <= value <= 1
+        value = min(1.0, max(0.0, value))
+
+        setattr(obj, self.private_name, value)
+
+    def __set_name__(self, owner, name):
+        self.private_name = '_' + name
+
+
 class Creature:
 
     alive: bool = True
+    p_death = Probability()
+    p_reproduce = Probability()
 
     def __init__(self, p_death: float, p_reproduce: float):
         self.p_death = p_death
@@ -23,33 +41,6 @@ class Creature:
             return self.__class__(p_death=self.p_death, p_reproduce=self.p_reproduce)
 
         return None
-
-    # TODO: Implement it as descriptors
-    @property
-    def p_death(self):
-
-        return self.__p_death
-
-    @p_death.setter
-    def p_death(self, value):
-
-        # Makes sure that 0 <= value <= 1
-        value = min(1.0, max(0.0, value))
-
-        self.__p_death = value
-
-    @property
-    def p_reproduce(self):
-
-        return self.__p_reproduce
-
-    @p_reproduce.setter
-    def p_reproduce(self, value):
-
-        # Makes sure that 0 <= value <= 1
-        value = min(1.0, max(0.0, value))
-
-        self.__p_reproduce = value
 
 
 class Prey(Creature):
@@ -94,5 +85,3 @@ class Predator(Creature):
 
         if random.random() < probability:
             self.alive = False
-
-
